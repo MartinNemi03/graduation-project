@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+	--width: 1920px;
+	--height: 1080px;
+}
+
+html, body {
+	position: relative;
+	width: var(--width);
+	height: var(--height);
+	overflow: hidden;
+	background-color: black;
+}
+
+body {
+	margin: 0 auto;
+}
+
+@media (max-width: 1360px) {
+	:root {
+		--width: 1360px;
+		--height: 765px;
+	}
+}

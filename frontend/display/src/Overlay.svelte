@@ -1,12 +1,15 @@
 <script>
-	import momentjs from "moment";
-	import "moment/locale/cs";
-
+	const weekdays = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
 	let moment, time, date;
 	function updateTime() {
-		moment = momentjs().locale("cs");
-		date = moment.format("dd D.M.");
-		time = moment.format('LTS');
+		let d = new Date();
+
+		let hours = d.getHours();
+		let mins = d.getMinutes();
+		let secs = d.getSeconds();
+		
+		date = `${weekdays[d.getDay()].slice(0, 2)} ${d.getDate()}.${d.getMonth()}.`;
+		time = `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`;
 	}
 
 	setInterval(updateTime, 500);
@@ -14,7 +17,7 @@
 
 	let currentNews = "c", nextNews = "n", newsIndex = 0;
 	let news = [
-		`Dneska je ${moment.format("dddd")}.`,
+		`Dneska je ${weekdays[new Date().getDay()].toLowerCase()}.`,
 		`Naše škola se účastnila nějaké soutěže.`
 	];
 
@@ -24,9 +27,10 @@
 			newsIndex = 0;
 
 		nextNews = news[newsIndex];
-		document.querySelector('.news').animate([
-			{ margin: '16px 0 0 0' },
-			{ margin: '-120px 0 0 0' }
+		let elem = document.querySelector('.current');
+		elem.animate([
+			{ margin: `${getComputedStyle(elem).marginTop} 0 0 0` },
+			{ margin: `-${getComputedStyle(document.documentElement).getPropertyValue('--overlay-height')} 0 0 0` }
 		], 1000).play();
 
 		setTimeout(() => {
@@ -53,6 +57,14 @@
 </overlay>
 
 <style>
+	:root {
+		--overlay-height: 120px; 
+		--news-font-size: 56px;
+
+		--timestamp-width: 260px;
+		--date-font-size: 36px;
+		--time-font-size: 48px;
+	}
 	#overlay {
 		position: absolute;
 		width: 100%;
@@ -62,12 +74,12 @@
 	#overlay-container {
 		background: linear-gradient(0deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), #FF7D00;
 		width: 100%;
-		height: 120px;
+		height: var(--overlay-height);
 		text-align: center;
 	}
 
 	#timestamp {
-		width: 260px;
+		width: var(--timestamp-width);
 		height: calc(100% - 10px);
 		padding-top: 10px;
 		line-height: 44px;
@@ -79,29 +91,45 @@
 
 	.date {
 		font-family: 'Poppins', sans-serif;
-		font-size: 36px;
+		font-size: var(--date-font-size);
 		font-weight: 400;
-		padding-top: 10px;
+		padding-top: calc(var(--overlay-height) / 12);
 	}
 
 	.time {
 		font-family: 'Poppins', sans-serif;
-		font-size: 48px;
+		font-size: var(--time-font-size);
 		font-weight: 600;
 	}
 
 	#feed {
-		width: calc(100% - 260px);
+		width: calc(100% - var(--timestamp-width));
 		height: 100%;
-		font-size: 68px;
 		overflow: hidden;
 	}
 
 	.news {
 		width: 100%;
 		height: 100%;
-		margin-top: 16px;
-		font-size: 56px;
+		margin-top: calc((var(--overlay-height) - var(--news-font-size)) / 3);
+		font-size: var(--news-font-size);
 		font-family: 'Poppins', sans-serif;
+	}
+
+	@media (max-width: 1360px) {
+		:root {
+			--overlay-height: 80px;
+			--news-font-size: 40px;
+
+			--timestamp-width: 185px;
+			--date-font-size: 26px;
+			--time-font-size: 36px;
+		}
+
+		#timestamp {
+			height: calc(100% - 5px);
+			padding-top: 5px;
+			line-height: 34px;
+		}
 	}
 </style>
