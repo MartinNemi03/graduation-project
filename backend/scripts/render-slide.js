@@ -3,15 +3,11 @@ const slideTypes = {
 }
 
 module.exports = {
-    render: async (data) => {
-        console.log(data);
-
+    render: async (type, data) => {
         require('svelte/register');
-        let component = require(slideTypes.video).default;
+        let component = require(slideTypes[type]).default;
 
-        const html = component.render({ data: data });
-        console.log(html);
+        const render = component.render({ data: data });
+        return render;
     }
 }
-
-module.exports.render({ link: "/display/content/dQw4w9WgXcQ.mp4" });

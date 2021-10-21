@@ -23,3 +23,10 @@ body {
 		--height: 765px;
 	}
 }
+
+@media (max-width: 1280px) {
+	:root {
+		--width: 1280px;
+		--height: 720px;
+	}
+}
