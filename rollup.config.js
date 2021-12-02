@@ -27,30 +27,53 @@ function serve() {
 	};
 }
 
-export default {
-	// Display
-	input: 'frontend/display/src/main.js',
-	output: {
-		sourcemap: true,
-		format: 'iife',
-		file: 'frontend/display/public/build/main.js'
+export default [
+	{ // Dashboard
+		input: 'frontend/dashboard/src/main.js',
+		output: {
+			sourcemap: true,
+			format: 'iife',
+			file: 'frontend/dashboard/public/build/main.js'
+		},
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production
+				}
+			}),
+			css({ output: 'dashboard.css' }),
+			resolve({
+				browser: true,
+				dedupe: ['svelte']
+			}),
+			commonjs(),
+			terser()
+		],
 	},
-	plugins: [
-		svelte({
-			compilerOptions: {
-				dev: !production
-			}
-		}),
-		css({ output: 'display.css' }),
-		resolve({
-			browser: true,
-			dedupe: ['svelte']
-		}),
-		commonjs(),
-		!production && serve(),
-		production && terser()
-	],
-	watch: {
-		clearScreen: false
+	{ // Display
+		input: 'frontend/display/src/main.js',
+		output: {
+			sourcemap: true,
+			format: 'iife',
+			file: 'frontend/display/public/build/main.js'
+		},
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production
+				}
+			}),
+			css({ output: 'display.css' }),
+			resolve({
+				browser: true,
+				dedupe: ['svelte']
+			}),
+			commonjs(),
+			!production && serve(),
+			production && terser()
+		],
+		watch: {
+			clearScreen: false
+		}
 	}
-};
+];

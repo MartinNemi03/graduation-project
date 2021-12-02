@@ -1,4 +1,5 @@
 /node_modules/
+/frontend/dashboard/public/build/
 /frontend/display/public/build/
 /frontend/display/public/content/
 

@@ -7,7 +7,9 @@ module.exports = {
         require('svelte/register');
         let component = require(slideTypes[type]).default;
 
-        const render = component.render({ data: data });
+        let render = component.render({ data: data });
+        render.type = type;
+
         return render;
     }
 }

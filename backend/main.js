@@ -3,6 +3,8 @@ const uuid = require('uuid');
 const Display = require('./classes/display.js');
 let displays = new Map();
 
+let currentSlide;
+
 async function main() {
     let slides = [
         {
@@ -18,14 +20,9 @@ async function main() {
         id += 1;
         if (id >= slides.length) id = 0;
 
-        let slide = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
-        displays.forEach((display) => {
-            display.socket.send(JSON.stringify({
-                action: 'slide',
-                slide: slide
-            }));
-        });
-    }, (10 * 1000));
+        currentSlide = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
+        displays.forEach((display) => display.sendSlide(currentSlide));
+    }, (60 * 1000));
 }
 
 module.exports = {
@@ -37,6 +34,9 @@ module.exports = {
     },
     removeDisplay: (id) => {
         displays.delete(id);
+    },
+    getCurrentSlide: () => {
+        return currentSlide;
     }
 };
 

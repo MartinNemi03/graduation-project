@@ -12,7 +12,7 @@
 		time = `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`;
 	}
 
-	setInterval(updateTime, 500);
+	setInterval(updateTime, 100);
 	updateTime();
 
 	let currentNews = "c", nextNews = "n", newsIndex = 0;
