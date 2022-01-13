@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+require('dotenv').config();
 
 const Display = require('./classes/display.js');
 let displays = new Map();
@@ -20,7 +21,8 @@ async function main() {
         id += 1;
         if (id >= slides.length) id = 0;
 
-        currentSlide = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
+        currentSlide = slides[id];
+        currentSlide.render = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
         displays.forEach((display) => display.sendSlide(currentSlide));
     }, (60 * 1000));
 }

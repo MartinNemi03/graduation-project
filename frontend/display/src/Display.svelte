@@ -1,5 +1,7 @@
 <script>
     import { onMount } from 'svelte';
+    import { fade } from 'svelte/transition';
+
     import Overlay from './Overlay.svelte';
 
     let socket, state, slide;
@@ -55,8 +57,12 @@
     <Overlay/>
 
     {#if slide != null}
-        {@html '<style>' + slide.css.code + '</style>'}
-        {@html slide.html}
+        {#key slide}
+            <div id="slide-{slide.id}" transition:fade>
+                {@html '<style>' + slide.render.css.code + '</style>'}
+                {@html slide.render.html}
+            </div>
+        {/key}
     {/if}
 </main>
 
