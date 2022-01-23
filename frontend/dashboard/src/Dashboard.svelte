@@ -1,5 +1,6 @@
 <script>
     import { Route } from 'tinro'; 
+    import { SvelteToast } from '@zerodevx/svelte-toast';
 
     import SlideList from './pages/slides/List.svelte';
     import SlideAdd from './pages/slides/Add.svelte';
@@ -35,6 +36,7 @@
 </header>
 
 <div class="container">
+    <SvelteToast />
     <Route path="/dashboard/*">
         <Route path="/">
             <h1>Dashboard</h1>

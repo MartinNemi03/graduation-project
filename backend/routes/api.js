@@ -61,10 +61,18 @@ router.get('/slides/:id', async (req, res) => {
 
 router.post('/slides/add', async (req, res) => {
     try {
-        console.log(req.body);
-
         const slide = req.body;
         let result = await mongo.addSlide(slide.type, slide.data);
+
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.post('/slides/remove', async (req, res) => {
+    try {
+        let result = await mongo.removeSlide(req.id);
 
         res.json(result);
     } catch (e) {

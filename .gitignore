@@ -3,4 +3,5 @@
 /frontend/display/public/build/
 /frontend/display/public/content/
 
+.env
 .DS_Store

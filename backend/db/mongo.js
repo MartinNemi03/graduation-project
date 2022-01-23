@@ -38,7 +38,7 @@ module.exports = {
     addSlide: async (type = "unknown", data = {}) => {
         try {
             let slideDoc = {
-                _id: uuid.v4(),
+                _id: uuid.v4().slice(0, 8),
                 timestamp: new Date().getTime(),
                 slide: {
                     type: type,
@@ -56,8 +56,17 @@ module.exports = {
             return handleError(e);
         }
     },
-    removeSlide: (id) => {
+    removeSlide: async (id) => {
+        try {
+            await db.collection('slides').deleteOne({ _id: id });
 
+            return {
+                success: true,
+                removed_id: id
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     },
     getSlides: async (limit = 0) => {
         try {

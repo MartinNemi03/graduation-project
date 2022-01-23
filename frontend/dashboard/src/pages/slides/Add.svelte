@@ -1,4 +1,6 @@
 <script>
+    import { toast } from '@zerodevx/svelte-toast';
+
     const form = {
         type: "",
         data: {}
@@ -33,18 +35,27 @@
         });
     };
 
+    const catchError = (err) => {
+        toast.push("Form submittion failed..");
+        if (err) console.error(err);
+    };
+
     const submitForm = async () => {
         console.log(JSON.stringify(form));
 
-        const req = await fetch('../../api/slides/add', {
+        await fetch('../../api/slides/add', {
             headers: {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
             body: JSON.stringify(form)
-        });
-
-        console.log(req.json());
+        }).then((req) => {
+            if (req.status !== 200) catchError()
+            else req.json().then((res) => {
+                console.log(res);
+                toast.push(`Slide was added successfully! <small>(ID: ${res.slide._id})</small>`);
+            });
+        }).catch(catchError);
     };
 </script>
 
@@ -77,7 +88,7 @@
         {/each}
         <br>
         <button type="button" on:click={submitForm}>Add new slide</button>
-    </form> 
+    </form>
 </div>
 
 <style>
