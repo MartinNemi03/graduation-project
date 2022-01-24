@@ -70,9 +70,9 @@ router.post('/slides/add', async (req, res) => {
     }
 });
 
-router.post('/slides/remove', async (req, res) => {
+router.post('/slides/delete', async (req, res) => {
     try {
-        let result = await mongo.removeSlide(req.id);
+        let result = await mongo.deleteSlide(req.body.id);
 
         res.json(result);
     } catch (e) {

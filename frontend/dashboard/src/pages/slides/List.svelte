@@ -33,6 +33,22 @@
         }).catch(catchError);
     };
 
+    const deleteRow = async (id) => {
+        await fetch ('../../api/slides/delete', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({ id: id })
+        }).then((req) => {
+            if (req.status !== 200) catchError(req)
+            else req.json().then((res) => {
+                if (res.success = false) catchError(res)
+                else updateList()
+            });
+        }).catch(catchError);
+    };
+
     onMount(async () => {
         await updateList();
     });
@@ -61,8 +77,8 @@
                         <tr>
                             <td>{row._id}</td>
                             <td>{row.slide.type}</td>
-                            <td>{JSON.stringify(row.slide.data)}</td>
-                            <td><button>X</button></td>
+                            <td><span class="data">{JSON.stringify(row.slide.data)}</span></td>
+                            <td><button type="button" on:click={deleteRow(row._id)}>X</button></td>
                         </tr>
                     {/each}
                 </tbody>
@@ -82,5 +98,14 @@
 </div>
 
 <style>
-    
+    .data {
+        display: inline-block;
+        text-overflow: ellipsis;
+        max-height: 24px;
+        overflow: hidden;
+    }
+
+    .data:hover {
+        max-height: none;
+    }
 </style>

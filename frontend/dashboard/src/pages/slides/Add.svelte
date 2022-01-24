@@ -14,7 +14,8 @@
     ];
 
     const availableTypes = [
-        "video"
+        "video",
+        "text"
     ];
 
     const addData = (key = "", value = "") => {

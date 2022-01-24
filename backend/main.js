@@ -4,27 +4,13 @@ require('dotenv').config();
 const Display = require('./classes/display.js');
 let displays = new Map();
 
+const queue = require('./queue');
 let currentSlide;
 
-async function main() {
-    let slides = [
-        {
-            type: 'video', 
-            data: { 
-                link: "/display/content/mp4/dQw4w9WgXcQ.mp4" 
-            }
-        }
-    ];
-
-    let id = 0;
-    setInterval(async () => {
-        id += 1;
-        if (id >= slides.length) id = 0;
-
-        currentSlide = slides[id];
-        currentSlide.render = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
-        displays.forEach((display) => display.sendSlide(currentSlide));
-    }, (60 * 1000));
+async function updateSlide(slide) {
+    currentSlide = slide;
+    currentSlide.render = await require('./scripts/render-slide').render(slides[id].type, slides[id].data);
+    displays.forEach((display) => display.sendSlide(currentSlide));
 }
 
 module.exports = {
@@ -39,11 +25,16 @@ module.exports = {
     },
     getCurrentSlide: () => {
         return currentSlide;
+    },
+    updateCurrentSlide: (slide) => {
+        if (slide != null) {
+            currentSlide = slide;
+            updateSlide(slide);
+        }
     }
 };
 
 require('./server.js');
-main();
 
 
 

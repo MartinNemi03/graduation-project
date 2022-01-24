@@ -56,7 +56,7 @@ module.exports = {
             return handleError(e);
         }
     },
-    removeSlide: async (id) => {
+    deleteSlide: async (id) => {
         try {
             await db.collection('slides').deleteOne({ _id: id });
 

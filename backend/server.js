@@ -16,8 +16,8 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('*', (req, res, next) => {
-    console.log(`${req.ip} - ${req.method} ${req.url}`);
+app.use('*', (req, res, next) => {
+    console.log(`${req.ip} - ${req.method} ${req.baseUrl}`);
     next();
 });
 
