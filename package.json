@@ -33,6 +33,7 @@
     "nodemon": "^2.0.15",
     "sirv-cli": "^1.0.0",
     "socket.io-client": "^4.2.0",
+    "svelte-dnd-action": "^0.9.14",
     "svelte-forms-lib": "^2.0.1",
     "tinro": "^0.6.10",
     "uuid": "^8.3.2",

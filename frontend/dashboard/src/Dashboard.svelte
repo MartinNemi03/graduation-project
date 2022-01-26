@@ -5,11 +5,18 @@
     import SlideList from './pages/slides/List.svelte';
     import SlideAdd from './pages/slides/Add.svelte';
 
+    import QueueDefault from './pages/queue/Default.svelte';
+    import QueueCurrent from './pages/queue/Current.svelte';
+
     const pages = {
         slides: {
             list: SlideList,
             add: SlideAdd
-        } 
+        },
+        queue: {
+            default: QueueDefault,
+            current: QueueCurrent
+        }
     }
 </script>
 
@@ -47,6 +54,11 @@
             </Route>
             <Route path="/add">
                 <SlideAdd/>
+            </Route>
+        </Route>
+        <Route path="/queue/*">
+            <Route path="/default">
+                <QueueDefault/>
             </Route>
         </Route>
     </Route>

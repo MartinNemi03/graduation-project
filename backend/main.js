@@ -30,7 +30,7 @@ module.exports = {
         if (slide != null) {
             currentSlide = slide;
             updateSlide(slide);
-        }
+        } else currentSlide = {};
     }
 };
 

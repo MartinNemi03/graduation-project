@@ -8,7 +8,7 @@
 		let mins = d.getMinutes();
 		let secs = d.getSeconds();
 		
-		date = `${weekdays[d.getDay()].slice(0, 2)} ${d.getDate()}.${d.getMonth()}.`;
+		date = `${weekdays[d.getDay()].slice(0, 2)} ${d.getDate()}.${d.getMonth() + 1}.`;
 		time = `${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`;
 	}
 
