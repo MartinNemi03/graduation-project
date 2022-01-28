@@ -34,6 +34,15 @@
                         <li><a class="dropdown-item" href="/dashboard/slides/add">Add a new slide</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="queueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Queue
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="queueDropdown">
+                        <li><a class="dropdown-item" href="/dashboard/queue/current">Current queue</a></li>
+                        <li><a class="dropdown-item" href="/dashboard/queue/default">Default queue</a></li>
+                    </ul>
+                </li>
             </ul>
             <div class="d-flex flex-row-reverse">
                 <span class="navbar-text">Vítejte, admin!</span>

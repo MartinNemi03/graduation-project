@@ -4,9 +4,12 @@ const uuid = require('uuid');
 const mongo = new MongoClient(process.env.MONGO_URL, { useUnifiedTopology: true });
 let db;
 
+let ready = false;
+
 const startMongo = async (mongo) => {
     await mongo.connect();
     db = mongo.db(process.env.MONGO_NAME);
+    ready = true;
 };
 
 const handleError = (e) => {
@@ -20,6 +23,7 @@ const handleError = (e) => {
 
 module.exports = {
     db: db,
+    ready: ready,
     getSlide: async (id) => {
         try {
             let slideDoc = await db.collection('slides').findOne({ _id: id });

@@ -11,13 +11,15 @@
 </script>
 
 <section use:dndzone={{items, flipDurationMs}} on:consider={handleSort} on:finalize={handleSort}>
-	{#each items as item(item._id)}
+	{#each items as item(item.id)}
 		<div animate:flip={{ duration: flipDurationMs }}>
-			{item.title}	
+			{JSON.stringify(item)}
 		</div>
 	{/each}
 </section>
 
 <style>
-    
+	section {
+		min-height: 200px;
+	}
 </style>

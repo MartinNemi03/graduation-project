@@ -26,19 +26,37 @@ router.get('/slides/current', (req, res) => {
     }
 });
 
-router.get('/slides/next', (req, res) => {
-    // TODO: Return next slide if possible
-});
-
-router.get('/slides/queue', (req, res) => {
-    // TODO: Return the entite slide queue
-});
-
 router.get('/slides/list', async (req, res) => {
     try {
         let result = await mongo.getSlides();
 
         res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/queue/current/list', async (req, res) => {
+    try {
+        let queue = require('../queue').getCurrent();
+
+        res.json({
+            success: true,
+            queue: queue
+        });
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/queue/default/list', async (req, res) => {
+    try {
+        let queue = require('../queue').getDefault();
+
+        res.json({
+            success: true,
+            queue: queue
+        });
     } catch (e) {
         handleError(e, res);
     }

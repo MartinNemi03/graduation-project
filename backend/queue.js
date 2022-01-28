@@ -4,9 +4,10 @@ let currentQueue = [];
 let defaultQueue = [
     { 
         duration: 60,
-        _id: ""
+        id: "73bbe73c"
     }
 ];
+
 let dId = 0;
 
 const getFromDefault = () => {
@@ -19,15 +20,19 @@ const getFromDefault = () => {
 async function main() {
     let slide;
 
+    if (!require('./db/mongo').ready) return;
+
     if (currentQueue[0] == null) 
         slide = getFromDefault();
     else
         slide = currentQueue.shift();
 
-    if (slide?.id)
-        slide.slide = await mongo.getSlide(slide.id);
+    if (slide?.id) {
+        let s = await mongo.getSlide(slide.id);
+        slide.slide = s.slide;
+    }
 
-
+    console.log(slide);
 }
 
 module.exports = {
