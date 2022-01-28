@@ -57,6 +57,16 @@
         }).catch(catchError);
     };
 
+    const setAvailableSlides = async (newList) => {
+        availableSlides = newList;
+        console.log(newList);
+    };
+
+    const setDefaultQueue = async (newQueue) => {
+        defaultQueue = newQueue;
+        console.log(newQueue);
+    };
+
     const getAll = async () => {
         ready = false;
 
@@ -79,14 +89,16 @@
     {/if}
 
     {#if ready}
+        <h3>{JSON.stringify(defaultQueue)}</h3>
+
         <div class="row">
             <div class="col-6">
                 <h3>Available Slides</h3>
-                <DragList items={availableSlides}/>       
+                <DragList items={availableSlides} onDrop={setAvailableSlides}/>       
             </div>
             <div class="col-6">
                 <h3>Default Queue</h3>
-                <DragList items={defaultQueue}/>
+                <DragList items={defaultQueue} onDrop={setDefaultQueue}/>
             </div>
         </div>
     {:else}

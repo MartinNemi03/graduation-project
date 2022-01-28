@@ -4,16 +4,22 @@
 	const flipDurationMs = 100;
 	
 	export let items = [];
+	export let onDrop;
 	
-	function handleSort(e) {
+	function handleConsider(e) {
 		items = e.detail.items;
+	}
+
+	function handleFinalize(e) {
+		const { items: newItems } = e.detail;
+		if (onDrop) onDrop(newItems);
 	}
 </script>
 
-<section use:dndzone={{items, flipDurationMs}} on:consider={handleSort} on:finalize={handleSort}>
+<section use:dndzone={{items, flipDurationMs}} on:consider={handleConsider} on:finalize={handleFinalize}>
 	{#each items as item(item.id)}
 		<div animate:flip={{ duration: flipDurationMs }}>
-			{JSON.stringify(item)}
+			{item.id}
 		</div>
 	{/each}
 </section>
