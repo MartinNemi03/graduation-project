@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte';
+    import { toastSuccess, toastError } from '../../../public/toast';
     import DragList from '../../components/DragList.svelte';
 
     let ready = false;
@@ -7,11 +8,20 @@
 
     let availableSlides = [];
     let defaultQueue = [];
+
+    let serverCache = {
+        availableSlides: [],
+        defaultQueue: []
+    };
     // TODO: Add loading of slides and default queue from API
 
-    const catchError = (err) => {
-        error = true;
+    const catchError = (err, resetQueue = false) => {
+        toastError("Nastala chyba!");
         if (err) console.error(err);
+        if (resetQueue) {
+            availableSlides = serverCache.availableSlides;
+            defaultQueue = serverCache.defaultQueue;
+        }
     };
 
     const getAvailableSlides = async () => {
@@ -30,6 +40,8 @@
                         slide.id = slide._id;
                         delete slide._id;
                     });
+
+                    serverCache.availableSlides = availableSlides;
                 }
             });
         }).catch(catchError);
@@ -52,6 +64,40 @@
                             return value.id != slide.id;
                         });
                     });
+
+                    serverCache.defaultQueue = defaultQueue;
+                }
+            });
+        }).catch(catchError);
+    };
+
+    const updateDefaultQueue = async (newQueue) => {
+        for (let i = 0; i < newQueue.length; i++) {
+            const slide = newQueue[i];
+            
+            newQueue[i] = {
+                duration: slide?.duration || 60,
+                id: slide?.id
+            }
+        }
+
+        await fetch('../../api/queue/default/upasdasdate', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(newQueue)
+        }).then((req) => {
+            if (req.status !== 200) catchError(req, true);
+            else req.json().then((res) => {
+                if (res.success = false) catchError(res, true);
+                else {
+                    defaultQueue = newQueue;
+
+                    serverCache.defaultQueue = defaultQueue;
+                    serverCache.availableSlides = availableSlides;
+
+                    toastSuccess(`Default queue was updated!`);
                 }
             });
         }).catch(catchError);
@@ -60,11 +106,6 @@
     const setAvailableSlides = async (newList) => {
         availableSlides = newList;
         console.log(newList);
-    };
-
-    const setDefaultQueue = async (newQueue) => {
-        defaultQueue = newQueue;
-        console.log(newQueue);
     };
 
     const getAll = async () => {
@@ -98,7 +139,7 @@
             </div>
             <div class="col-6">
                 <h3>Default Queue</h3>
-                <DragList items={defaultQueue} onDrop={setDefaultQueue}/>
+                <DragList items={defaultQueue} onDrop={updateDefaultQueue}/>
             </div>
         </div>
     {:else}

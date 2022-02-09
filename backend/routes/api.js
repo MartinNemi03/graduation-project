@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const mongo = require('../db/mongo');
+const queue = require('../queue');
 
 const handleError = (e, res) => {
     console.error(e);
@@ -93,6 +94,20 @@ router.post('/slides/delete', async (req, res) => {
         let result = await mongo.deleteSlide(req.body.id);
 
         res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.post('/queue/default/update', async (req, res) =>{
+    try {
+        const newQueue = req.body;
+        console.log(newQueue);
+
+        res.json({
+            success: true,
+            queue: newQueue
+        });
     } catch (e) {
         handleError(e, res);
     }

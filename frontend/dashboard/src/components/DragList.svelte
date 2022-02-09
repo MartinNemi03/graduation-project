@@ -11,8 +11,8 @@
 	}
 
 	function handleFinalize(e) {
-		const { items: newItems } = e.detail;
-		if (onDrop) onDrop(newItems);
+		const { items: nItems } = e.detail;
+		if (onDrop) onDrop(nItems);
 	}
 </script>
 
