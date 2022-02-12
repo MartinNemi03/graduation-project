@@ -59,11 +59,18 @@
                 if (res.success = false) catchError(res)
                 else {
                     defaultQueue = res.queue;
-                    defaultQueue.forEach(slide => {
+                    for (let i = 0; i < defaultQueue.length; i++) {
+                        const slide = defaultQueue[i];
+
                         availableSlides = availableSlides.filter((value) => {
                             return value.id != slide.id;
                         });
-                    });
+
+                        defaultQueue[i] = {
+                            id: slide.id,
+                            duration: slide.duration
+                        };
+                    }
 
                     serverCache.defaultQueue = defaultQueue;
                 }
@@ -81,7 +88,7 @@
             }
         }
 
-        await fetch('../../api/queue/default/upasdasdate', {
+        await fetch('../../api/queue/default/update', {
             headers: {
                 'Content-Type': 'application/json'
             },

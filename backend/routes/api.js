@@ -102,7 +102,7 @@ router.post('/slides/delete', async (req, res) => {
 router.post('/queue/default/update', async (req, res) =>{
     try {
         const newQueue = req.body;
-        console.log(newQueue);
+        queue.updateDefault(newQueue);
 
         res.json({
             success: true,

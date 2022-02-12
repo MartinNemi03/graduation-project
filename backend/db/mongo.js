@@ -23,7 +23,9 @@ const handleError = (e) => {
 
 module.exports = {
     db: db,
-    ready: ready,
+    ready: () => {
+        return ready;
+    },
     getSlide: async (id) => {
         try {
             let slideDoc = await db.collection('slides').findOne({ _id: id });
