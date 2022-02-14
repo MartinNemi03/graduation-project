@@ -4,13 +4,23 @@ const slideTypes = {
 }
 
 module.exports = {
-    render: async (type, data) => {
-        require('svelte/register');
-        let component = require(slideTypes[type]).default;
+    render: async (type = "", data = {}) => {
+        try {
+            require('svelte/register');
+            let component = require(slideTypes[type]).default;
 
-        let render = component.render({ data: data });
-        render.type = type;
+            let render = component.render({ data: data });
+            render.type = type;
 
-        return render;
+            return {
+                success: true,
+                render: render
+            };
+        } catch (e) {
+            return {
+                success: false, 
+                error: e.toString()
+            };
+        }
     }
 }

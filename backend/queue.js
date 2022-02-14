@@ -30,20 +30,23 @@ const getUpcomingSlide = () => {
 
 const prepareSlide = async (slide) => {
     try {
-        console.log(`${Date.now()}: Preparing slide`);
+        console.log(`${Date.now()}: Preparing slide #${slide.id}`);
         slide.error = false;
 
         let s = await mongo.getSlide(slide.id);
         if (!s.success) throw s.error;
-        slide.slide = s.slide;
+        slide.slide = s.slide.slide;
 
-        slide.render = await render(s.slide.slide.type, s.slide.slide.data);
+        let r = await render(s.slide.slide.type, s.slide.slide.data);
+        if (!r.success) throw r.error;
+        slide.render = r.render;
 
-        console.log(`${Date.now()}: Returning slide`);
+        console.log(`${Date.now()}: Returning slide #${slide.id}`);
         return slide;
     } catch (e) {
         console.error("Error while preparing slide: " + e);
         slide.error = true;
+        return slide;
     }
 };
 
@@ -53,13 +56,14 @@ const checkSlidesInQueue = async () => {
             let currentSlide = await main.getCurrentSlide();
 
             let queuedTimestamp;
-            if (currentSlide != null)
+            if (currentSlide != null) {
                 queuedTimestamp = ((currentSlide.queued_timestamp || Date.now()) + (1000 * currentSlide.duration));
-            else queuedTimestamp = (Date.now() + 5000);
+            } else queuedTimestamp = (Date.now() + 5000);
 
+            if (queuedTimestamp - Date.now() > 15000) return;
             let slide = getUpcomingSlide();
 
-            if (slide != null) {
+            if (slide != null && !slide?.error) {
                 slide.queued_timestamp = queuedTimestamp;
                 queue[0] = slide;
             }
@@ -67,8 +71,16 @@ const checkSlidesInQueue = async () => {
 
         for (let i = 0; i < queue.length; i++) {
             if (((queue[i]?.queued_timestamp - Date.now() <= 15000) && !queue[i]?.render) 
-            || Date.now() - queue[i]?.queued_timestamp >= 5000)
-                queue[i] = await prepareSlide(queue[i]);
+            || Date.now() - queue[i]?.queued_timestamp >= 5000) {
+                let preparedSlide = await prepareSlide(queue[i]);
+                if (preparedSlide?.error) {
+                    queue.splice(i, 1);
+                    console.log(queue);
+                    continue;
+                };
+
+                queue[i] = preparedSlide;
+            }
         }
     } catch (e) {
         console.error(e);
@@ -106,11 +118,20 @@ const loadQueues = () => {
 
         currentQueue = loadQueue(paths.currentQueue);
         defaultQueue = loadQueue(paths.defaultQueue);
+        // TODO: Přidat potenciální předpřípravu všech slidů v obou frontách
 
         queuesLoaded = true;
         console.log(`${Date.now()}: Queues loaded!`);
     } catch (e) {
         console.error(e);
+    }
+};
+
+const saveQueue = (filePath, queueData) => {
+    try {
+        // TODO: Přidat ukládání queue, kde se fronta pročistí od nadbytečných infomací a zůstane jen id a duration
+    } catch (e) {
+        console.log(e);
     }
 };
 
