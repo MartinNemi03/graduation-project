@@ -65,11 +65,6 @@
                         availableSlides = availableSlides.filter((value) => {
                             return value.id != slide.id;
                         });
-
-                        defaultQueue[i] = {
-                            id: slide.id,
-                            duration: slide.duration
-                        };
                     }
 
                     serverCache.defaultQueue = defaultQueue;
@@ -79,15 +74,6 @@
     };
 
     const updateDefaultQueue = async (newQueue) => {
-        for (let i = 0; i < newQueue.length; i++) {
-            const slide = newQueue[i];
-            
-            newQueue[i] = {
-                duration: slide?.duration || 60,
-                id: slide?.id
-            }
-        }
-
         await fetch('../../api/queue/default/update', {
             headers: {
                 'Content-Type': 'application/json'

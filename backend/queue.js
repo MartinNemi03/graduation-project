@@ -110,7 +110,7 @@ const loadQueue = (filePath) => {
     return queue;
 };
 
-const loadQueues = () => {
+const loadQueues = async () => {
     try {
         console.log(`${Date.now()}: Loading queues..`);
         if (!fs.existsSync(paths.cacheFolder))
@@ -119,6 +119,18 @@ const loadQueues = () => {
         currentQueue = loadQueue(paths.currentQueue);
         defaultQueue = loadQueue(paths.defaultQueue);
         // TODO: Přidat potenciální předpřípravu všech slidů v obou frontách
+
+        console.log(`${Date.now()}: Preparing all slides in queues..`);
+
+        if (currentQueue.length > 0)
+            for (let i = 0; i < currentQueue.length; i++)
+                currentQueue[i] = await prepareSlide(currentQueue[i]);
+
+        if (defaultQueue.length > 0)
+            for (let i = 0; i < defaultQueue.length; i++)
+                defaultQueue[i] = await prepareSlide(defaultQueue[i]);
+
+        console.log(`${Date.now()}: All slides prepared!`);
 
         queuesLoaded = true;
         console.log(`${Date.now()}: Queues loaded!`);
@@ -129,6 +141,15 @@ const loadQueues = () => {
 
 const saveQueue = (filePath, queueData) => {
     try {
+        queueData.forEach(slide => {
+            slide = {
+                id: slide.id,
+                duration: slide.duration
+            };
+        });
+
+        console.log(queueData);
+        saveJson(filePath, queueData);
         // TODO: Přidat ukládání queue, kde se fronta pročistí od nadbytečných infomací a zůstane jen id a duration
     } catch (e) {
         console.log(e);
@@ -139,7 +160,7 @@ const mainFunc = async () => {
     try {
         if (!mongo.ready()) return;
 
-        if (!queuesLoaded) return loadQueues();
+        if (!queuesLoaded) return await loadQueues();
         await checkSlidesInQueue();
 
         if (!queue[0]) return;
@@ -159,15 +180,15 @@ module.exports = {
         return currentQueue;
     },
     updateCurrent: (queue) => {
-        saveJson(paths.currentQueue, queue);
         currentQueue = queue;
+        saveQueue(paths.currentQueue, currentQueue);
     },
     getDefault: () => {
         return defaultQueue;
     },
     updateDefault: (queue) => {
-        saveJson(paths.defaultQueue, queue);
         defaultQueue = queue;
+        saveQueue(paths.defaultQueue, defaultQueue);
     }
 }
 
