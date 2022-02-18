@@ -2,6 +2,8 @@
     import { Route } from 'tinro'; 
     import { SvelteToast } from '@zerodevx/svelte-toast';
 
+    import DashboardMain from './pages/Main.svelte';
+
     import SlideList from './pages/slides/List.svelte';
     import SlideAdd from './pages/slides/Add.svelte';
 
@@ -9,6 +11,7 @@
     import QueueCurrent from './pages/queue/Current.svelte';
 
     const pages = {
+        main: DashboardMain,
         slides: {
             list: SlideList,
             add: SlideAdd
@@ -55,7 +58,7 @@
     <SvelteToast />
     <Route path="/dashboard/*">
         <Route path="/">
-            <h1>Dashboard</h1>
+            <DashboardMain/>
         </Route>
         <Route path="/slides/*">
             <Route path="/list">

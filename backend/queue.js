@@ -30,7 +30,7 @@ const getUpcomingSlide = () => {
 
 const prepareSlide = async (slide) => {
     try {
-        console.log(`${Date.now()}: Preparing slide #${slide.id}`);
+        console.log(`Preparing slide #${slide.id}`);
         slide.error = false;
 
         let s = await mongo.getSlide(slide.id);
@@ -41,7 +41,7 @@ const prepareSlide = async (slide) => {
         if (!r.success) throw r.error;
         slide.render = r.render;
 
-        console.log(`${Date.now()}: Returning slide #${slide.id}`);
+        console.log(`Returning slide #${slide.id}`);
         return slide;
     } catch (e) {
         console.error("Error while preparing slide: " + e);
@@ -112,7 +112,7 @@ const loadQueue = (filePath) => {
 
 const loadQueues = async () => {
     try {
-        console.log(`${Date.now()}: Loading queues..`);
+        console.log(`Loading queues..`);
         if (!fs.existsSync(paths.cacheFolder))
             fs.mkdirSync(paths.cacheFolder)
 
@@ -120,7 +120,7 @@ const loadQueues = async () => {
         defaultQueue = loadQueue(paths.defaultQueue);
         // TODO: Přidat potenciální předpřípravu všech slidů v obou frontách
 
-        console.log(`${Date.now()}: Preparing all slides in queues..`);
+        console.log(`Preparing all slides in queues..`);
 
         if (currentQueue.length > 0)
             for (let i = 0; i < currentQueue.length; i++)
@@ -130,10 +130,10 @@ const loadQueues = async () => {
             for (let i = 0; i < defaultQueue.length; i++)
                 defaultQueue[i] = await prepareSlide(defaultQueue[i]);
 
-        console.log(`${Date.now()}: All slides prepared!`);
+        console.log(`All slides prepared!`);
 
         queuesLoaded = true;
-        console.log(`${Date.now()}: Queues loaded!`);
+        console.log(`Queues loaded!`);
     } catch (e) {
         console.error(e);
     }

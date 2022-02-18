@@ -4,12 +4,14 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "nodemon backend/main"
+    "start": "npm run build && node backend/main",
+    "start-nodemon": "nodemon backend/main"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@zerodevx/svelte-toast": "^0.6.3",
+    "concurrently": "^7.0.0",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-svelte": "^7.0.0",

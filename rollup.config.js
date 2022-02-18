@@ -6,8 +6,10 @@ import css from 'rollup-plugin-css-only';
 
 const production = !process.env.ROLLUP_WATCH;
 
-function serve() {
+function serve(start = "start") {
 	let server;
+	console.log(production);
+	console.log(start);
 
 	function toExit() {
 		if (server) server.kill(0);
@@ -16,7 +18,7 @@ function serve() {
 	return {
 		writeBundle() {
 			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+			server = require('child_process').spawn('npm', ['run', start, '--', '--dev'], {
 				stdio: ['ignore', 'inherit', 'inherit'],
 				shell: true
 			});
@@ -69,7 +71,7 @@ export default [
 				dedupe: ['svelte']
 			}),
 			commonjs(),
-			!production && serve(),
+			production ? serve() : serve("start-nodemon"),
 			production && terser()
 		],
 		watch: {
