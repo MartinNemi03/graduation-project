@@ -13,7 +13,6 @@
         availableSlides: [],
         defaultQueue: []
     };
-    // TODO: Add loading of slides and default queue from API
 
     const catchError = (err, resetQueue = false) => {
         toastError("Nastala chyba!");
@@ -38,6 +37,7 @@
                     availableSlides = res.slides;
                     availableSlides.forEach(slide => {
                         slide.id = slide._id;
+                        slide.duration = 60;
                         delete slide._id;
                     });
 
@@ -123,8 +123,6 @@
     {/if}
 
     {#if ready}
-        <h3>{JSON.stringify(defaultQueue)}</h3>
-
         <div class="row">
             <div class="col-6">
                 <h3>Available Slides</h3>
@@ -145,5 +143,7 @@
 </div>
 
 <style>
-
+    h3 {
+        text-align: center;
+    }
 </style>

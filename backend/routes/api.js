@@ -27,6 +27,20 @@ router.get('/slides/current', (req, res) => {
     }
 });
 
+router.get('/slides/upcoming', (req, res) => {
+    try {
+        let slide = require('../queue').getUpcomingSlide();
+        if (!slide) throw "No next slide is available.";
+
+        res.json({
+            success: true,
+            slide: slide
+        });
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
 router.get('/slides/list', async (req, res) => {
     try {
         let result = await mongo.getSlides();

@@ -70,14 +70,16 @@ const checkSlidesInQueue = async () => {
         }
 
         for (let i = 0; i < queue.length; i++) {
-            if (((queue[i]?.queued_timestamp - Date.now() <= 15000) && !queue[i]?.render) 
-            || Date.now() - queue[i]?.queued_timestamp >= 5000) {
+            let timeUntil = queue[i]?.queued_timestamp - Date.now();
+            let timeTo = Date.now() - queue[i]?.queued_timestamp;
+
+            if (((timeUntil <= 15000) && !queue[i]?.render) || timeTo >= 5000) {
                 let preparedSlide = await prepareSlide(queue[i]);
                 if (preparedSlide?.error) {
                     queue.splice(i, 1);
                     console.log(queue);
                     continue;
-                };
+                }
 
                 queue[i] = preparedSlide;
             }
@@ -89,7 +91,7 @@ const checkSlidesInQueue = async () => {
 
 const readJson = (filePath) => {
     if (fs.existsSync(filePath))
-        return JSON.parse(fs.readFileSync(filePath))
+        return JSON.parse(fs.readFileSync(filePath));
     else return null;
 };
 
@@ -114,11 +116,10 @@ const loadQueues = async () => {
     try {
         console.log(`Loading queues..`);
         if (!fs.existsSync(paths.cacheFolder))
-            fs.mkdirSync(paths.cacheFolder)
+            fs.mkdirSync(paths.cacheFolder);
 
         currentQueue = loadQueue(paths.currentQueue);
         defaultQueue = loadQueue(paths.defaultQueue);
-        // TODO: Přidat potenciální předpřípravu všech slidů v obou frontách
 
         console.log(`Preparing all slides in queues..`);
 
@@ -141,12 +142,13 @@ const loadQueues = async () => {
 
 const saveQueue = (filePath, queueData) => {
     try {
-        queueData.forEach(slide => {
-            slide = {
+        for (let i = 0; i < queueData.length; i++) {
+            const slide = queueData[i];
+            queueData[i] = {
                 id: slide.id,
-                duration: slide.duration
+                duration: slide.duration || 60
             };
-        });
+        }
 
         console.log(queueData);
         saveJson(filePath, queueData);
@@ -189,8 +191,18 @@ module.exports = {
     updateDefault: (queue) => {
         defaultQueue = queue;
         saveQueue(paths.defaultQueue, defaultQueue);
-    }
-}
+    },
+    getUpcomingSlide: () => {
+        if (queue[0] != null) 
+            return queue[0];
+        else if (currentQueue[0] == null) {
+            if (defaultId >= defaultQueue.length) 
+                defaultId = 0;
+            return [...defaultQueue][defaultId];
+        } else 
+            return currentQueue[0];
+    } 
+};
 
 mainFunc();
 setInterval(mainFunc, 1000);
