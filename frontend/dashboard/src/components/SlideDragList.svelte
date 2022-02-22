@@ -50,6 +50,8 @@
 	}
 
 	span {
+		font-size: 12px;
+		color: rgba(0, 0, 0, 0.5);
 		float: right;
 	}
 </style>

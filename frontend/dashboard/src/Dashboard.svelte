@@ -20,7 +20,7 @@
             default: QueueDefault,
             current: QueueCurrent
         }
-    }
+    };
 </script>
 
 <header class="sticky-top shadow">
