@@ -68,27 +68,42 @@
         </p>
 
         <small>Type:</small><br>
-        <select name="type" id="slide-type" bind:value={form.type}>
-            <option value="">Custom</option>
-            {#each availableTypes as type}
-                <option value="{type}">{type}</option>
-            {/each}
-        </select>
-        {#if !availableTypes.includes(form.type)}
-            <input type="text" name="actual-type" id="slide-actual-type" bind:value={form.type}>
-        {/if}
+        <div class="row type-row">
+            <div class="col-4">
+                <select class="form-select" name="type" id="slide-type" bind:value={form.type}>
+                    <option value="">Custom</option>
+                    {#each availableTypes as type}
+                        <option value="{type}">{type}</option>
+                    {/each}
+                </select>
+            </div>
+            <div class="col-4">
+                {#if !availableTypes.includes(form.type)}
+                    <input type="text" class="form-control" name="actual-type" id="slide-actual-type" placeholder="Custom Type" bind:value={form.type}>
+                {/if}
+            </div>
+        </div>
+
         <br><small>Data:</small><br>
         {#each data as item, i}
-            <input type="text" name="data-key-{i}" id="data-key-{i}" on:change={updateData} bind:value={data[i].key}>
-            <input type="text" name="data-value-{i}" id="data-value-{i}" on:change={updateData} bind:value={data[i].value}>
-            <button type="button" on:click={addData}> + </button>
-            {#if i > 0}
-                <button type="button" on:click={() => { removeData(i) }}> - </button>
-            {/if}
-            <br>
+        <div class="row data-row">
+            <div class="col">
+                <input type="text" class="form-control" name="data-key-{i}" id="data-key-{i}" placeholder="Data Key" on:change={updateData} bind:value={data[i].key}>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="data-value-{i}" id="data-value-{i}" placeholder="Data Value" on:change={updateData} bind:value={data[i].value}>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-success" on:click={addData}> + </button>
+                {#if i > 0}
+                    <button type="button" class="btn btn-danger" on:click={() => { removeData(i) }}> - </button>
+                {/if}
+            </div>
+        </div>
+        <br>    
         {/each}
         <br>
-        <button type="button" on:click={submitForm}>Add new slide</button>
+        <button type="button" class="btn btn-primary" on:click={submitForm}>Add new slide</button>
     </form>
 </div>
 

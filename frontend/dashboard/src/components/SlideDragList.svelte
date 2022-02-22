@@ -36,7 +36,7 @@
 
 <style>
 	section {
-		min-height: 200px;
+		min-height: 70vh;
 	}
 
 	div {
@@ -50,7 +50,6 @@
 	}
 
 	span {
-		display: inline-block;
 		float: right;
 	}
 </style>

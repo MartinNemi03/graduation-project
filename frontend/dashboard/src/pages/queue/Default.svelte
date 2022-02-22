@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { toastSuccess, toastError } from '../../../public/toast';
-    import DragList from '../../components/DragList.svelte';
+    import SlideDragList from '../../components/SlideDragList.svelte';
 
     let ready = false;
     let error = false;
@@ -126,11 +126,11 @@
         <div class="row">
             <div class="col-6">
                 <h3>Available Slides</h3>
-                <DragList items={availableSlides} onDrop={setAvailableSlides}/>       
+                <SlideDragList items={availableSlides} onDrop={setAvailableSlides}/>       
             </div>
             <div class="col-6">
                 <h3>Default Queue</h3>
-                <DragList items={defaultQueue} onDrop={updateDefaultQueue}/>
+                <SlideDragList items={defaultQueue} onDrop={updateDefaultQueue}/>
             </div>
         </div>
     {:else}

@@ -54,7 +54,7 @@
     </nav>
 </header>
 
-<div class="container">
+<div class="container container-main">
     <SvelteToast />
     <Route path="/dashboard/*">
         <Route path="/">
@@ -77,5 +77,7 @@
 </div>
 
 <style>
-
+    .container-main {
+        min-height: 90vh;
+    }
 </style>
