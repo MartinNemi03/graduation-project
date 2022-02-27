@@ -79,4 +79,9 @@
         font-size: 5vw;
         margin: 5vw;
     }
+
+    div {
+        width: 100%;
+        height: calc(100% - var(--overlay-height));
+    }
 </style>

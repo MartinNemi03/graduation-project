@@ -1,13 +1,24 @@
 <script>
     export let data;
+
+    const text = data?.text || "No text found.";
 </script>
 
-<slide class="slide slide-text">
-    <p>{data.text}</p>
-</slide>
+<div class="slide slide-text">
+    <div class="text-wrapper">{@html text}</div>
+</div>
 
 <style>
-    p {
-        font-size: 400px;
+    .slide-text {
+        display: inline-block;
+        position: absolute;
+        top: calc(50% - var(--overlay-height));
+        left: 50%;
+        font-size: 100px;
+    }
+
+    .text-wrapper {
+        position: relative;
+        left: -50%;
     }
 </style>

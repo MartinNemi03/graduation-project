@@ -57,7 +57,7 @@
 </overlay>
 
 <style>
-	:root {
+	:global(:root) {
 		--overlay-height: 120px; 
 		--news-font-size: 56px;
 
@@ -117,7 +117,7 @@
 	}
 
 	@media (max-width: 1360px) {
-		:root {
+		:global(:root) {
 			--overlay-height: 80px;
 			--news-font-size: 40px;
 

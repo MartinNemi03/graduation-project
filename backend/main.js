@@ -25,7 +25,7 @@ module.exports = {
     removeDisplay: (id) => {
         displays.delete(id);
     },
-    getCurrentSlide: async () => {
+    getCurrentSlide: () => {
         return currentSlide;
     },
     updateCurrentSlide: (slide) => {

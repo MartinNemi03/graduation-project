@@ -12,6 +12,16 @@ let defaultQueue = [];
 
 let defaultId = 0;
 let queuesLoaded = false;
+let queuesError = false;
+
+const handleError = (e) => {
+    console.error(e);
+
+    return {
+        success: false,
+        error: e.toString()
+    };
+};
 
 const getFromDefault = () => {
     const slide = [...defaultQueue][defaultId];
@@ -136,12 +146,14 @@ const loadQueues = async () => {
         queuesLoaded = true;
         console.log(`Queues loaded!`);
     } catch (e) {
+        queuesError = true;
         console.error(e);
     }
 };
 
-const saveQueue = (filePath, queueData) => {
+const saveQueue = (filePath, qData) => {
     try {
+        const queueData = [...qData];
         for (let i = 0; i < queueData.length; i++) {
             const slide = queueData[i];
             queueData[i] = {
@@ -152,10 +164,17 @@ const saveQueue = (filePath, queueData) => {
 
         console.log(queueData);
         saveJson(filePath, queueData);
-        // TODO: Přidat ukládání queue, kde se fronta pročistí od nadbytečných infomací a zůstane jen id a duration
     } catch (e) {
         console.log(e);
     }
+};
+
+const waitForLoad = () => {
+    return new Promise((resolve) => {
+        setInterval(() => {
+            if (queuesLoaded) resolve();
+        }, 1000);
+    });
 };
 
 const mainFunc = async () => {
@@ -178,29 +197,66 @@ const mainFunc = async () => {
 };
 
 module.exports = {
-    getCurrent: () => {
-        return currentQueue;
+    getCurrent: async () => {
+        try {
+            if (queuesError) throw new Error();
+            if (!queuesLoaded) await waitForLoad();
+
+            return {
+                success: true,
+                queue: currentQueue
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     },
     updateCurrent: (queue) => {
         currentQueue = queue;
         saveQueue(paths.currentQueue, currentQueue);
     },
-    getDefault: () => {
-        return defaultQueue;
+    getDefault: async () => {
+        try {
+            if (queuesError) throw new Error();
+            if (!queuesLoaded) await waitForLoad();
+
+            return {
+                success: true,
+                queue: defaultQueue 
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     },
     updateDefault: (queue) => {
+
         defaultQueue = queue;
         saveQueue(paths.defaultQueue, defaultQueue);
     },
-    getUpcomingSlide: () => {
-        if (queue[0] != null) 
-            return queue[0];
-        else if (currentQueue[0] == null) {
-            if (defaultId >= defaultQueue.length) 
-                defaultId = 0;
-            return [...defaultQueue][defaultId];
-        } else 
-            return currentQueue[0];
+    getUpcomingSlide: async () => {
+        try {
+            if (queuesError) throw new Error();
+            if (!queuesLoaded) await waitForLoad();
+            let upcoming;
+
+            if (queue[0] != null) 
+                upcoming = queue[0];
+            else if (currentQueue[0] == null) {
+                if (defaultId >= defaultQueue.length) 
+                    defaultId = 0;
+                upcoming =  [...defaultQueue][defaultId];
+            } else 
+                upcoming = currentQueue[0];
+
+            if (upcoming == null)
+                throw new Error("Upcoming slide was not found.");
+
+            return {
+                success: true,
+                upcoming: upcoming
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     } 
 };
 

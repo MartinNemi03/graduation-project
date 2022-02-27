@@ -1,7 +1,7 @@
 const slideTypes = {
     video: '../../frontend/display/src/slides/Video.svelte',
     text: '../../frontend/display/src/slides/Text.svelte'
-}
+};
 
 module.exports = {
     render: async (type = "", data = {}) => {

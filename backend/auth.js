@@ -11,8 +11,7 @@ const auth = (req, res, next) => { // Auth
 
     let data = new Buffer.from(header.split(' ')[1], 'base64').toString().split(':');
 
-    // TODO: Add login checks via mongo
-    if (data[0] == "admin" && data[1] == "admin") {
+    if (data[0] === process.env.DASHBOARD_USERNAME && data[1] === process.env.DASHBOARD_PASSWORD) {
         next();
     } else {
         res.setHeader('WWW-Authenticate', 'Basic');

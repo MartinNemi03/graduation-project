@@ -13,9 +13,9 @@ const handleError = (e, res) => {
     });
 };
 
-router.get('/slides/current', (req, res) => {
+router.get('/slides/current', async (req, res) => {
     try {
-        let slide = require('../main').getCurrentSlide();
+        let slide = await require('../main').getCurrentSlide();
         if (!slide) throw "No current slide is available.";
 
         res.json({
@@ -27,15 +27,10 @@ router.get('/slides/current', (req, res) => {
     }
 });
 
-router.get('/slides/upcoming', (req, res) => {
+router.get('/slides/upcoming', async (req, res) => {
     try {
-        let slide = require('../queue').getUpcomingSlide();
-        if (!slide) throw "No next slide is available.";
-
-        res.json({
-            success: true,
-            slide: slide
-        });
+        let result = await require('../queue').getUpcomingSlide();
+        res.json(result);
     } catch (e) {
         handleError(e, res);
     }
@@ -44,7 +39,6 @@ router.get('/slides/upcoming', (req, res) => {
 router.get('/slides/list', async (req, res) => {
     try {
         let result = await mongo.getSlides();
-
         res.json(result);
     } catch (e) {
         handleError(e, res);
@@ -53,12 +47,8 @@ router.get('/slides/list', async (req, res) => {
 
 router.get('/queue/current/list', async (req, res) => {
     try {
-        let queue = require('../queue').getCurrent();
-
-        res.json({
-            success: true,
-            queue: queue
-        });
+        let result = require('../queue').getCurrent();
+        res.json(result);
     } catch (e) {
         handleError(e, res);
     }
@@ -66,12 +56,8 @@ router.get('/queue/current/list', async (req, res) => {
 
 router.get('/queue/default/list', async (req, res) => {
     try {
-        let queue = require('../queue').getDefault();
-
-        res.json({
-            success: true,
-            queue: queue
-        });
+        let result = await require('../queue').getDefault();
+        res.json(result);
     } catch (e) {
         handleError(e, res);
     }
@@ -108,6 +94,20 @@ router.post('/slides/delete', async (req, res) => {
         let result = await mongo.deleteSlide(req.body.id);
 
         res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.post('/queue/current/update', async (req, res) =>{
+    try {
+        const newQueue = req.body;
+        queue.updateCurrent(newQueue);
+
+        res.json({
+            success: true,
+            queue: newQueue
+        });
     } catch (e) {
         handleError(e, res);
     }

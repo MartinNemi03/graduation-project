@@ -2,8 +2,11 @@
     import { onMount } from 'svelte';
     import { toastSuccess, toastError } from '../../../public/toast';
     import SlideDragList from '../../components/SlideDragList.svelte';
+    import RefreshButton from '../../components/RefreshButton.svelte';
 
     let ready = false;
+    let readyTimestamp = 0;
+
     let error = false;
 
     let availableSlides = [];
@@ -107,6 +110,7 @@
         await getAvailableSlides();
         await getDefaultQueue();
 
+        readyTimestamp = Date.now();
         ready = true;
     };
 
@@ -123,13 +127,14 @@
     {/if}
 
     {#if ready}
+        <RefreshButton timestamp={readyTimestamp} onRefresh={getAll}/>
         <div class="row">
-            <div class="col-6">
-                <h3>Available Slides</h3>
+            <div class="col-6 mt-3">
+                <h3>Available Slides</h3><hr>
                 <SlideDragList items={availableSlides} onDrop={setAvailableSlides}/>       
             </div>
-            <div class="col-6">
-                <h3>Default Queue</h3>
+            <div class="col-6 mt-3">
+                <h3>Default Queue</h3><hr>
                 <SlideDragList items={defaultQueue} onDrop={updateDefaultQueue}/>
             </div>
         </div>
