@@ -1,6 +1,7 @@
 <script>
 	const weekdays = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
-	let moment, time, date;
+	let time = "00:00:00", date = "Ne 1.1.";
+
 	function updateTime() {
 		let d = new Date();
 
@@ -13,20 +14,20 @@
 	}
 
 	setInterval(updateTime, 100);
-	updateTime();
 
-	let currentNews = "c", nextNews = "n", newsIndex = 0;
-	let news = [
-		`Dneska je ${weekdays[new Date().getDay()].toLowerCase()}.`,
-		`Naše škola se účastnila nějaké soutěže.`
-	];
+	let currentNews, nextNews, newsIndex = 0;
+	export let news = [];
 
-	function switchNews() {
+	const switchNews = () => {
+		if (news.length <= 0) return;
+
 		newsIndex++;
 		if(newsIndex >= news.length)
 			newsIndex = 0;
 
 		nextNews = news[newsIndex];
+		if (currentNews === nextNews) return;
+
 		let elem = document.querySelector('.current');
 		elem.animate([
 			{ margin: `${getComputedStyle(elem).marginTop} 0 0 0` },
@@ -36,10 +37,11 @@
 		setTimeout(() => {
 			currentNews = nextNews;
 		}, 900);
-	}
+	};
 
-	setInterval(switchNews, 5000);
-	currentNews = news[newsIndex];
+	setInterval(switchNews, 7500);
+	if (news.length >= newsIndex)
+		currentNews = news[newsIndex];
 </script>
 
 <overlay id="overlay">
@@ -50,8 +52,16 @@
 		</div>
 
 		<div id="feed">
-			<div class="news current">{currentNews}</div>
-			<div class="news next">{nextNews}</div>
+			<div class="news current">
+				{#if currentNews != null}
+					{currentNews}
+				{/if}
+			</div>
+			<div class="news next">
+				{#if nextNews != null}
+					{nextNews}
+				{/if}
+			</div>
 		</div>
 	</div>
 </overlay>

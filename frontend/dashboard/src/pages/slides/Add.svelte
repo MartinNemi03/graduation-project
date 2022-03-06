@@ -18,6 +18,10 @@
         "text"
     ];
 
+    const getSlideTypes = () => {
+
+    };
+
     const addData = (key = "", value = "") => {
         if (!(key instanceof String)) key = "";
         data = data.concat({ key, value });
@@ -42,8 +46,6 @@
     };
 
     const submitForm = async () => {
-        console.log(JSON.stringify(form));
-
         await fetch('../../api/slides/add', {
             headers: {
                 'Content-Type': 'application/json'
@@ -61,12 +63,7 @@
 </script>
 
 <div id="content">
-    <form>
-        <p>
-            { JSON.stringify(form) }<br>
-            { JSON.stringify(data) }
-        </p>
-
+    <form class="m-3">
         <small>Type:</small><br>
         <div class="row type-row">
             <div class="col-4">
@@ -87,16 +84,16 @@
         <br><small>Data:</small><br>
         {#each data as item, i}
         <div class="row data-row">
-            <div class="col">
+            <div class="col-3">
                 <input type="text" class="form-control" name="data-key-{i}" id="data-key-{i}" placeholder="Data Key" on:change={updateData} bind:value={data[i].key}>
             </div>
-            <div class="col">
+            <div class="col-7">
                 <input type="text" class="form-control" name="data-value-{i}" id="data-value-{i}" placeholder="Data Value" on:change={updateData} bind:value={data[i].value}>
             </div>
-            <div class="col">
-                <button type="button" class="btn btn-success" on:click={addData}> + </button>
+            <div class="col-2">
+                <button type="button" class="btn btn-success" on:click={addData}><i class="bi bi-plus-lg"></i></button>
                 {#if i > 0}
-                    <button type="button" class="btn btn-danger" on:click={() => { removeData(i) }}> - </button>
+                    <button type="button" class="btn btn-danger" on:click={() => { removeData(i) }}><i class="bi bi-x-lg"></i></button>
                 {/if}
             </div>
         </div>

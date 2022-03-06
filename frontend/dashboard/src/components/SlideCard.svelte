@@ -1,29 +1,57 @@
 <script>
-    export let item = {};
+    import { onMount, onDestroy } from 'svelte';
 
+    export let item = {};
+    export let onStatusChange = (status) => {};
+
+    let status = "waiting";
     let displayFooter = false;
     let footerText = "";
+    let interval;
+
+    const changeStatus = (newStatus) => {
+        if (status === newStatus) return;
+        status = newStatus;
+        onStatusChange(status);
+    };
+
+    const resetFooter = () => {
+        footerText = "";
+        displayFooter = false;
+    };
 
     const updateFooter = () => {
+        if (!item?.queued_timestamp) return resetFooter();
         let from = Math.floor((Date.now() - item?.queued_timestamp) / 1000);
         let to = Math.floor((item?.queued_timestamp - Date.now()) / 1000);
 
-        if (to <= 0 && from >= 60) {
-            displayFooter = false;
-            return;
+        if (from >= 60) 
+            if (status !== "already_displayed")
+                changeStatus("already_displayed");
+
+        if (to <= 0 && from >= 60) 
+            return resetFooter();
+
+        if (to >= 0) {
+            if (status != "upcoming") changeStatus("upcoming");
+            footerText = `Upcoming in <b>${to}s</b>`;
+        } else if (from >= 0 && from <= 60) {
+            if (status != "displaying") changeStatus("displaying");
+            footerText = `Displaying for <b>${(item.duration - from)}s</b>`;
         }
 
-        if (to >= 0)
-            footerText = `Upcoming in <b>${to}s</b>`;
-        else if (from >= 0 && from <= 60)
-            footerText = `Displayed for <b>${(item.duration - from)}s</b>`;
-
         displayFooter = true;
-        setTimeout(updateFooter, 250);
     };
 
-    if (item?.queued_timestamp)
+    onMount(() => {
         updateFooter();
+        interval = setInterval(updateFooter, 250);
+    });
+
+    onDestroy(() => {
+        if (interval) clearInterval(interval);
+        resetFooter();
+    });
 </script>
 
 <div id="slide-{item.id}" class="slide-card card border-{item.error ? 'danger' : 'dark'}">

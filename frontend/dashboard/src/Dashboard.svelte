@@ -69,6 +69,9 @@
             </Route>
         </Route>
         <Route path="/queue/*">
+            <Route path="/current">
+                <QueueCurrent/>
+            </Route>
             <Route path="/default">
                 <QueueDefault/>
             </Route>

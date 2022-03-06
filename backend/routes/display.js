@@ -13,7 +13,8 @@ router.ws('/', (ws, req) => {
     console.log(`${req.ip} - WS OPEN`);
     ws = addDisplay(ws, {
         ip: req.ip,
-        headers: req.headers
+        user_agent: req.headers["user-agent"],
+        join_timestamp: Date.now()
     });
 
     ws.on('message', (data) => {
@@ -22,6 +23,7 @@ router.ws('/', (ws, req) => {
 
     ws.on('close', (code, err) => {
         console.log(`${req.ip} - WS CLOSE`);
+        require('../main').removeDisplay(ws.id);
     });
 });
 

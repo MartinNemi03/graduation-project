@@ -78,7 +78,7 @@
                             <td>{row._id}</td>
                             <td>{row.slide.type}</td>
                             <td><span class="data">{JSON.stringify(row.slide.data)}</span></td>
-                            <td><button type="button" on:click={deleteRow(row._id)}>X</button></td>
+                            <td><button type="button" class="btn btn-sm btn-danger" on:click={deleteRow(row._id)}><i class="bi bi-x-lg"></i></button></td>
                         </tr>
                     {/each}
                 </tbody>

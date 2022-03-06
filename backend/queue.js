@@ -1,4 +1,5 @@
 const main = require('./main');
+const helper = require('./helper');
 const mongo = require('./db/mongo');
 const { render } = require('./scripts/render-slide');
 
@@ -12,6 +13,7 @@ let defaultQueue = [];
 
 let defaultId = 0;
 let queuesLoaded = false;
+let queuesLoading = false;
 let queuesError = false;
 
 const handleError = (e) => {
@@ -63,7 +65,7 @@ const prepareSlide = async (slide) => {
 const checkSlidesInQueue = async () => {
     try {
         if (queue.length <= 0) {
-            let currentSlide = await main.getCurrentSlide();
+            let currentSlide = await main.getCurrentSlide()?.current;
 
             let queuedTimestamp;
             if (currentSlide != null) {
@@ -81,9 +83,9 @@ const checkSlidesInQueue = async () => {
 
         for (let i = 0; i < queue.length; i++) {
             let timeUntil = queue[i]?.queued_timestamp - Date.now();
-            let timeTo = Date.now() - queue[i]?.queued_timestamp;
+            let timeSinceRender = Date.now() - queue[i]?.render?.time;
 
-            if (((timeUntil <= 15000) && !queue[i]?.render) || timeTo >= 5000) {
+            if (((timeUntil <= 15000) && (!queue[i]?.render || (timeSinceRender >= 90000)))) {
                 let preparedSlide = await prepareSlide(queue[i]);
                 if (preparedSlide?.error) {
                     queue.splice(i, 1);
@@ -99,37 +101,26 @@ const checkSlidesInQueue = async () => {
     }
 };
 
-const readJson = (filePath) => {
-    if (fs.existsSync(filePath))
-        return JSON.parse(fs.readFileSync(filePath));
-    else return null;
-};
-
-const saveJson = (filePath, fileData) => {
-    return fs.writeFileSync(filePath, JSON.stringify(fileData));
-};
-
 const paths = {
-    cacheFolder: path.resolve('./backend/cache'),
     currentQueue: path.resolve('./backend/cache/queue-current.json'),
     defaultQueue: path.resolve('./backend/cache/queue-default.json')
 };
 
 const loadQueue = (filePath) => {
-    let queue = readJson(filePath);
+    let queue = helper.readJson(filePath);
     queue = queue ? queue : [];
-    saveJson(filePath, queue);
+    helper.saveJson(filePath, queue);
     return queue;
 };
 
 const loadQueues = async () => {
     try {
-        console.log(`Loading queues..`);
-        if (!fs.existsSync(paths.cacheFolder))
-            fs.mkdirSync(paths.cacheFolder);
+        queuesLoading = true;
 
-        currentQueue = loadQueue(paths.currentQueue);
-        defaultQueue = loadQueue(paths.defaultQueue);
+        console.log(`Loading queues..`);
+
+        currentQueue = await loadQueue(paths.currentQueue);
+        defaultQueue = await loadQueue(paths.defaultQueue);
 
         console.log(`Preparing all slides in queues..`);
 
@@ -143,10 +134,24 @@ const loadQueues = async () => {
 
         console.log(`All slides prepared!`);
 
+        queuesLoading = false;
         queuesLoaded = true;
         console.log(`Queues loaded!`);
     } catch (e) {
         queuesError = true;
+        console.error(e);
+    }
+};
+
+const saveQueues = async () => {
+    try {
+        console.log(`Saving all queues..`);
+
+        saveQueue(paths.currentQueue, currentQueue);
+        saveQueue(paths.defaultQueue, defaultQueue);
+
+        console.log(`Queues saved!`);
+    } catch (e) {
         console.error(e);
     }
 };
@@ -162,25 +167,26 @@ const saveQueue = (filePath, qData) => {
             };
         }
 
-        console.log(queueData);
         saveJson(filePath, queueData);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 };
 
 const waitForLoad = () => {
     return new Promise((resolve) => {
-        setInterval(() => {
-            if (queuesLoaded) resolve();
-        }, 1000);
+        let int = setInterval(() => {
+            if (queuesLoaded) {
+                clearInterval(int);
+                resolve();
+            }
+        }, 100);
     });
 };
 
 const mainFunc = async () => {
     try {
-        if (!mongo.ready()) return;
-
+        if (!mongo.ready() || queuesLoading) return;
         if (!queuesLoaded) return await loadQueues();
         await checkSlidesInQueue();
 
@@ -188,8 +194,6 @@ const mainFunc = async () => {
         if (queue[0].queued_timestamp >= Date.now()) return;
 
         let slide = queue.shift();
-        console.log(slide);
-
         main.updateCurrentSlide(slide);
     } catch (e) {
         console.error("Error in queue's main function: " + e);
@@ -211,8 +215,17 @@ module.exports = {
         }
     },
     updateCurrent: (queue) => {
-        currentQueue = queue;
-        saveQueue(paths.currentQueue, currentQueue);
+        try {
+            currentQueue = queue;
+            saveQueue(paths.currentQueue, currentQueue);
+
+            return {
+                success: true,
+                queue: currentQueue
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     },
     getDefault: async () => {
         try {
@@ -228,9 +241,17 @@ module.exports = {
         }
     },
     updateDefault: (queue) => {
+        try {
+            defaultQueue = queue;
+            saveQueue(paths.defaultQueue, defaultQueue);
 
-        defaultQueue = queue;
-        saveQueue(paths.defaultQueue, defaultQueue);
+            return {
+                success: true,
+                queue: defaultQueue
+            };
+        } catch (e) {
+            return handleError(e);
+        }
     },
     getUpcomingSlide: async () => {
         try {
@@ -257,8 +278,11 @@ module.exports = {
         } catch (e) {
             return handleError(e);
         }
-    } 
+    }
 };
+
+// Autosave the queues, so they are accurate
+setInterval(saveQueues, (10 * 60 * 1000));
 
 mainFunc();
 setInterval(mainFunc, 1000);

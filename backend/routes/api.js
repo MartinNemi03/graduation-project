@@ -3,6 +3,8 @@ const router = express.Router();
 
 const mongo = require('../db/mongo');
 const queue = require('../queue');
+const main = require('../main');
+const news = require('../news');
 
 const handleError = (e, res) => {
     console.error(e);
@@ -15,13 +17,8 @@ const handleError = (e, res) => {
 
 router.get('/slides/current', async (req, res) => {
     try {
-        let slide = await require('../main').getCurrentSlide();
-        if (!slide) throw "No current slide is available.";
-
-        res.json({
-            success: true,
-            slide: slide
-        });
+        let result = await main.getCurrentSlide();
+        res.json(result);
     } catch (e) {
         handleError(e, res);
     }
@@ -29,7 +26,7 @@ router.get('/slides/current', async (req, res) => {
 
 router.get('/slides/upcoming', async (req, res) => {
     try {
-        let result = await require('../queue').getUpcomingSlide();
+        let result = await queue.getUpcomingSlide();
         res.json(result);
     } catch (e) {
         handleError(e, res);
@@ -45,9 +42,18 @@ router.get('/slides/list', async (req, res) => {
     }
 });
 
+router.get('/slides/types', async (req, res) => {
+    try {
+        let result = await require('../scripts/render-slide').getSlideTypes();
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
 router.get('/queue/current/list', async (req, res) => {
     try {
-        let result = require('../queue').getCurrent();
+        let result = await queue.getCurrent();
         res.json(result);
     } catch (e) {
         handleError(e, res);
@@ -56,7 +62,16 @@ router.get('/queue/current/list', async (req, res) => {
 
 router.get('/queue/default/list', async (req, res) => {
     try {
-        let result = await require('../queue').getDefault();
+        let result = await queue.getDefault();
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/news/current', async (req, res) => {
+    try {
+        let result = await main.getCurrentNews();
         res.json(result);
     } catch (e) {
         handleError(e, res);
@@ -102,26 +117,69 @@ router.post('/slides/delete', async (req, res) => {
 router.post('/queue/current/update', async (req, res) =>{
     try {
         const newQueue = req.body;
-        queue.updateCurrent(newQueue);
+        const result = queue.updateCurrent(newQueue);
+
+        if (!result.success) throw result.error;
 
         res.json({
             success: true,
-            queue: newQueue
+            queue: result.queue
         });
     } catch (e) {
         handleError(e, res);
     }
 });
 
-router.post('/queue/default/update', async (req, res) =>{
+router.post('/queue/default/update', async (req, res) => {
     try {
         const newQueue = req.body;
-        queue.updateDefault(newQueue);
+        const result = queue.updateDefault(newQueue);
+
+        if (!result.success) throw result.error;
 
         res.json({
             success: true,
-            queue: newQueue
+            queue: result.queue
         });
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/news/raw', async (req, res) => {
+    try {
+        let result = await news.getRawNews();
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/news/parsed', async (req, res) => {
+    try {
+        let result = await news.getParsedNews();
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.post('/news/update', async (req, res) => {
+    try {
+        const newNews = req.body;
+        const result = news.updateNews(newNews);
+
+        if (!result.success) throw result.error;
+        res.json(result);
+    } catch (e) {
+        handleError(e, res);
+    }
+});
+
+router.get('/display/list', async (req, res) => {
+    try {
+        let result = await require('../main').getDisplays();
+        res.json(result);
     } catch (e) {
         handleError(e, res);
     }

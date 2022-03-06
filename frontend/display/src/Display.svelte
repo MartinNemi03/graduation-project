@@ -4,7 +4,7 @@
 
     import Overlay from './Overlay.svelte';
 
-    let socket, state, slide;
+    let socket, state, slide, news = [];
     const updateState = () => { 
         state = socket.readyState; 
         if (state != 1) slide = null;
@@ -28,8 +28,13 @@
         socket.onmessage = (event) => {
             let data = JSON.parse(event.data);
 
-            if (data.action == "slide") {
-                slide = data.slide;
+            switch (data?.action) {
+                case "slide":
+                    slide = data.slide;
+                    break;
+                case "news":
+                    news = data.news;
+                    break;
             }
         };
     };
@@ -54,7 +59,7 @@
             Websocket was closed!
         {/if}
     </h1>
-    <Overlay/>
+    <Overlay news={news}/>
 
     {#if slide != null}
         {#key slide}

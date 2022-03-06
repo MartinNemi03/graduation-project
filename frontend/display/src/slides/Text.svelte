@@ -5,7 +5,7 @@
 </script>
 
 <div class="slide slide-text">
-    <div class="text-wrapper">{@html text}</div>
+    <div class="text-wrapper">{@html `${text}`}</div>
 </div>
 
 <style>
