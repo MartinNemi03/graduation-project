@@ -69,7 +69,7 @@
 <style>
     .refresh {
         position: fixed;
-        top: 70px;
+        top: 76px;
         left: 50%;
         z-index: 10;
     }

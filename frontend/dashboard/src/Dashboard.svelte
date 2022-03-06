@@ -3,6 +3,7 @@
     import { SvelteToast } from '@zerodevx/svelte-toast';
 
     import DashboardMain from './pages/Main.svelte';
+    import News from './pages/News.svelte';
 
     import SlideList from './pages/slides/List.svelte';
     import SlideAdd from './pages/slides/Add.svelte';
@@ -19,15 +20,16 @@
         queue: {
             default: QueueDefault,
             current: QueueCurrent
-        }
+        },
+        news: News
     };
 </script>
 
 <header class="sticky-top shadow">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container">
             <a href="/dashboard" class="navbar-brand">Dashboard</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto my-1">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="slidesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Slides
@@ -46,6 +48,9 @@
                         <li><a class="dropdown-item" href="/dashboard/queue/default">Default queue</a></li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard/news">News</a>
+                  </li>
             </ul>
             <div class="d-flex flex-row-reverse">
                 <span class="navbar-text">Vítejte, admin!</span>
@@ -75,6 +80,9 @@
             <Route path="/default">
                 <QueueDefault/>
             </Route>
+        </Route>
+        <Route path="/news">
+            <News/>
         </Route>
     </Route>
 </div>
