@@ -2,7 +2,7 @@
     export let item = {};
 </script>
 
-<div id="display-{item.id}" class="display-card card">
+<div id="display-{item.id}" class="display-card card border-dark">
     <div class="card-body">
         <span class="card-subtitle text-muted slide-id">{item.id}</span>
         <table>

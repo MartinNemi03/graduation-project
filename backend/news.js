@@ -153,7 +153,7 @@ module.exports = {
             rawNews = newNews;
             helper.saveJson(newsPath, rawNews);
 
-            parsedNews = parseVariables(rawNews);
+            parsedNews = await parseVariables(rawNews);
             main.updateCurrentNews(parsedNews);
 
             return {

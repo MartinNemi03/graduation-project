@@ -87,6 +87,10 @@
 		float: right;
 	}
 
+    .slide-card {
+        overflow: hidden;
+    }
+
     th {
         text-align: right;
         padding-right: 6px;

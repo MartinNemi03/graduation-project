@@ -49,10 +49,10 @@
 
 <div class="refresh">
     <div class="refresh-wrapper btn-group" role="group">
-        <button type="button" class="btn btn-outline-dark btn-refresh" on:click={refresh}>Refresh{refreshToggle ? ` (${untilRefresh}s)` : ""}</button>
+        <button type="button" class="btn btn-light btn-outline-dark btn-refresh" on:click={refresh}>Refresh{refreshToggle ? ` (${untilRefresh}s)` : ""}</button>
         {#if timerSeconds.length > 0}
             <div class="btn-group" role="group">
-                <button id="timer-dropdown" type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <button id="timer-dropdown" type="button" class="btn btn-light btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     {refreshToggle ? `${refreshTimer}s` : "Off"}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="timer-dropdown">

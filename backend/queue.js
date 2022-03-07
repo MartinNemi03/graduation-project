@@ -4,7 +4,6 @@ const mongo = require('./db/mongo');
 const { render } = require('./scripts/render-slide');
 
 const path = require('path');
-const fs = require('fs');
 
 let queue = [];
 
@@ -167,7 +166,7 @@ const saveQueue = (filePath, qData) => {
             };
         }
 
-        saveJson(filePath, queueData);
+        helper.saveJson(filePath, queueData);
     } catch (e) {
         console.error(e);
     }

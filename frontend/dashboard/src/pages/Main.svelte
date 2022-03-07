@@ -62,14 +62,7 @@
             if (req.status !== 200) catchError(req)
             else req.json().then((res) => {
                 if (res.success == false) connectedDisplays = null;
-                else {
-                    let displays = res.displays;
-                    connectedDisplays = [[], [], []];
-                    for (let i = 0; i < displays.length; i++) {
-                        const display = displays[i];
-                        connectedDisplays[(i % 3)].push(display);
-                    }
-                };
+                else connectedDisplays = res.displays;
             });
         }).catch(catchError);
     };
@@ -112,8 +105,8 @@
 
     {#if ready}
         <RefreshButton timestamp={readyTimestamp} onRefresh={getAll} defaultTimer={120} timerSeconds={[75, 90, 120]}/>
-        <div class="row">
-            <div class="col-6 mt-3">
+        <div class="row row mt-md-3 mt-5">
+            <div class="col-6">
                 <h3>Current Slide</h3><hr> 
                 {#if currentSlide != null}
                     <SlideCard item={currentSlide} onStatusChange={(status) => {onStatusChange(status, "already_displayed")}}/>
@@ -121,7 +114,7 @@
                     <h4>No current slide was found.</h4>
                 {/if}
             </div>
-            <div class="col-6 mt-3">
+            <div class="col-6">
                 <h3>Upcoming Slide</h3><hr>
                 {#if upcomingSlide != null}
                     <SlideCard item={upcomingSlide} onStatusChange={(status) => {onStatusChange(status, "displaying")}}/>
@@ -137,11 +130,9 @@
         </div>
         {#if connectedDisplays != null}
             <div class="row">
-                {#each connectedDisplays as displayArray}
-                    <div class="col-4">
-                        {#each displayArray as display}
-                            <DisplayCard item={display}/><br>
-                        {/each}
+                {#each connectedDisplays as display}
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <DisplayCard item={display}/><br>
                     </div>
                 {/each}
             </div>

@@ -128,12 +128,12 @@
 
     {#if ready}
         <RefreshButton timestamp={readyTimestamp} onRefresh={getAll}/>
-        <div class="row">
-            <div class="col-6 mt-3">
+        <div class="row mt-md-3 mt-5">
+            <div class="col-6">
                 <h3>Available Slides</h3><hr>
                 <SlideDragList items={availableSlides} onDrop={setAvailableSlides}/>       
             </div>
-            <div class="col-6 mt-3">
+            <div class="col-6">
                 <h3>Default Queue</h3><hr>
                 <SlideDragList items={defaultQueue} onDrop={updateDefaultQueue}/>
             </div>

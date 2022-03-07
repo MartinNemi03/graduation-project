@@ -64,6 +64,8 @@
     };
 
     const submitForm = async () => {
+        if (form.type === "") return toastError("Slide type is empty.");
+
         await fetch('../../api/slides/add', {
             headers: {
                 'Content-Type': 'application/json'
@@ -92,10 +94,10 @@
     {/if}
 
     {#if ready}
-        <form class="m-3">
+        <form class="mt-3">
             <small>Type:</small><br>
             <div class="row type-row">
-                <div class="col-4">
+                <div class="col-lg-2 col-4">
                     <select class="form-select" name="type" id="slide-type" bind:value={form.type}>
                         <option value="">Custom</option>
                         {#each availableTypes as type}
@@ -103,7 +105,7 @@
                         {/each}
                     </select>
                 </div>
-                <div class="col-4">
+                <div class="col-lg-4 col-8">
                     {#if !availableTypes.includes(form.type)}
                         <input type="text" class="form-control" name="actual-type" id="slide-actual-type" placeholder="Custom Type" bind:value={form.type}>
                     {/if}
@@ -113,17 +115,19 @@
             <br><small>Data:</small><br>
             {#each data as item, i}
             <div class="row data-row">
-                <div class="col-3">
-                    <input type="text" class="form-control" name="data-key-{i}" id="data-key-{i}" placeholder="Data Key" on:change={updateData} bind:value={data[i].key}>
+                <div class="col-xxl-11 col-md-10 col-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="data-key-{i}" id="data-key-{i}" placeholder="Data Key" on:change={updateData} bind:value={data[i].key}>
+                        <input type="text" class="form-control" name="data-value-{i}" id="data-value-{i}" placeholder="Data Value" on:change={updateData} bind:value={data[i].value}>
+                    </div>
                 </div>
-                <div class="col-7">
-                    <input type="text" class="form-control" name="data-value-{i}" id="data-value-{i}" placeholder="Data Value" on:change={updateData} bind:value={data[i].value}>
-                </div>
-                <div class="col-2">
-                    <button type="button" class="btn btn-success" on:click={addData}><i class="bi bi-plus-lg"></i></button>
-                    {#if i > 0}
-                        <button type="button" class="btn btn-danger" on:click={() => { removeData(i) }}><i class="bi bi-x-lg"></i></button>
-                    {/if}
+                <div class="col-xxl-1 col-md-2 col-3">
+                    <div class="input-group">
+                        <button type="button" class="btn btn-success" on:click={addData}><i class="bi bi-plus-lg"></i></button>
+                        {#if i > 0}
+                            <button type="button" class="btn btn-danger" on:click={() => { removeData(i) }}><i class="bi bi-x-lg"></i></button>
+                        {/if}
+                    </div>
                 </div>
             </div>
             <br>    

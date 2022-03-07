@@ -167,9 +167,10 @@ router.get('/news/parsed', async (req, res) => {
 router.post('/news/update', async (req, res) => {
     try {
         const newNews = req.body;
-        const result = news.updateNews(newNews);
+        const result = await news.updateNews(newNews);
 
-        if (!result.success) throw result.error;
+        console.log(result);
+        if (!result.success) throw result?.error;
         res.json(result);
     } catch (e) {
         handleError(e, res);
