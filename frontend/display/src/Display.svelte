@@ -4,14 +4,15 @@
 
     import Overlay from './Overlay.svelte';
 
-    let socket, state, slide, news = [];
+    let socket, state, news = [];
+    let slide;
     const updateState = () => { 
         state = socket.readyState; 
         if (state != 1) slide = null;
     };
 
     function startSocket() {
-        socket = new WebSocket(`ws://${window.location.host}/display`);
+        socket = new WebSocket(`wss://${window.location.host}/display`);
         updateState();
 
         socket.onopen = () => {
@@ -63,7 +64,7 @@
 
     {#if slide != null}
         {#key slide}
-            <div id="slide-{slide.id}" transition:fade>
+            <div id="slide-{slide.id}" class="slide-container" transition:fade>
                 {@html '<style>' + slide.render.css.code + '</style>'}
                 {@html slide.render.html}
             </div>
@@ -73,7 +74,6 @@
 
 <style>
     main {
-        background: gray; 
         overflow: hidden;
         width: 100%;
         height: 100%;
@@ -81,6 +81,7 @@
 
     #socket-info {
         position: absolute;
+        color: white;
         font-size: 5vw;
         margin: 5vw;
     }
@@ -88,5 +89,9 @@
     div {
         width: 100%;
         height: calc(100% - var(--overlay-height));
+    }
+
+    .slide-container {
+        position: absolute;
     }
 </style>

@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "npm run build && node backend/main",
+    "start": "node backend/main",
     "start-nodemon": "nodemon backend/main"
   },
   "devDependencies": {
