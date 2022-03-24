@@ -2,13 +2,13 @@
     export let data;
 
     const text = data?.text || "No text found.";
-    const bgColor = data?.background-color || black;
-    const textColor = data?.text-color || white;
+    const bgColor = data?.backgroundColor || "black";
+    const textColor = data?.textColor || "white";
 </script>
 
 <div class="slide slide-text" style="background-color: {bgColor}">
     <div class="text-div">
-        <div class="text-wrapper" style="font-color: {textColor}">{@html `${text}`}</div>
+        <div class="text-wrapper" style="color: {textColor}">{@html `${text}`}</div>
     </div>
 </div>
 

@@ -12,7 +12,7 @@
     };
 
     function startSocket() {
-        socket = new WebSocket(`wss://${window.location.host}/display`);
+        socket = new WebSocket(`ws://${window.location.host}/display`);
         updateState();
 
         socket.onopen = () => {

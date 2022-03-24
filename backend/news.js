@@ -20,6 +20,10 @@ const variables = {
     weekday_name: () => { 
         moment.locale('cs');
         return moment().format('dddd'); 
+    },
+    temperature: () => {
+        // Zde akorát získat teplotu
+        return '45.90°C';
     } 
 };
 

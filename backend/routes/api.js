@@ -80,6 +80,13 @@ router.get('/news/current', async (req, res) => {
 
 router.use(require('../auth'));
 
+router.get('/ping', async (req, res) => {
+    try { 
+        res.header("X-Username", process.env.DASHBOARD_USERNAME);
+        res.json({ success: true, pong: "Pong!" }); 
+    } catch (e) { handleError(e, res); }
+});
+
 router.get('/slides/:id', async (req, res) => {
     try {
         let id = req.params.id;

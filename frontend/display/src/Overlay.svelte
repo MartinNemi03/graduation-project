@@ -79,6 +79,7 @@
 		position: absolute;
 		width: 100%;
 		bottom: 0;
+		z-index: 10;
 	}
 
 	#overlay-container {

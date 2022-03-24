@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from 'svelte';
     import { Route } from 'tinro'; 
     import { SvelteToast } from '@zerodevx/svelte-toast';
 
@@ -23,6 +24,20 @@
         },
         news: News
     };
+
+    let username;
+    const getUsername = () => {
+        fetch('../../api/ping', {
+            method: 'GET'
+        }).then((req) => {
+            username = req.headers.get("X-Username") || null;
+            console.log(`Pinged, username is ${username}`);
+        });
+    };
+
+    onMount(() => {
+        getUsername();
+    });
 </script>
 
 <header class="sticky-top shadow">
@@ -50,10 +65,14 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboard/news">News</a>
-                  </li>
+                </li>
             </ul>
             <div class="d-flex flex-row-reverse">
-                <span class="navbar-text">Vítejte, admin!</span>
+                {#if username != null}
+                    <span class="navbar-text">Vítejte, {username}!</span>
+                {:else}
+                    <span class="navbar-text">Vítejte!</span>
+                {/if}
             </div>
         </div>
     </nav>
