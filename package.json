@@ -1,6 +1,7 @@
 {
   "name": "graduation-project",
   "version": "1.0.0",
+  "license": "MPL-2.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
